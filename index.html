@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bioteknologi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .difficulty {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .difficulty-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+        
+        .easy {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .hard {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            background-color: #f8f9fa;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            margin-left: 20px;
+        }
+        
+        .option {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .option.selected {
+            background-color: #cce5ff;
+            border: 1px solid #b8daff;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+        }
+        
+        .explanation-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        #check-answers {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        #check-answers:hover {
+            background-color: #2980b9;
+        }
+        
+        #reset-quiz {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        #reset-quiz:hover {
+            background-color: #5a6268;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .score.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kuis Bioteknologi</h1>
+        
+        <div class="difficulty">
+            <div class="difficulty-item easy">Mudah (3 soal)</div>
+            <div class="difficulty-item medium">Sedang (6 soal)</div>
+            <div class="difficulty-item hard">Sulit (3 soal)</div>
+        </div>
+        
+        <div id="quiz-container">
+            <!-- Soal akan dimasukkan di sini oleh JavaScript -->
+        </div>
+        
+        <div class="buttons">
+            <button id="check-answers">Periksa Jawaban</button>
+            <button id="reset-quiz">Reset Kuis</button>
+        </div>
+        
+        <div id="score" class="score"></div>
+    </div>
+
+    <script>
+        // Data soal
+        const questions = [
+            // Soal Mudah (Isian Singkat)
+            {
+                id: 1,
+                difficulty: "mudah",
+                type: "text",
+                text: "Enzim yang digunakan untuk memotong DNA pada lokasi spesifik dalam rekayasa genetika disebut enzim...",
+                answer: "restriksi",
+                explanation: "Enzim restriksi (atau endonuklease restriksi) berfungsi seperti gunting molekuler yang memotong DNA pada sekuens nukleotida yang spesifik."
+            },
+            {
+                id: 2,
+                difficulty: "mudah",
+                type: "text",
+                text: "Teknik kultur jaringan pada tumbuhan memanfaatkan sifat ... yaitu kemampuan satu sel untuk tumbuh menjadi individu baru yang utuh.",
+                answer: "totipotensi",
+                explanation: "Sifat totipotensi menjadi dasar kultur jaringan, di mana satu sel tumbuhan memiliki potensi genetik untuk berkembang menjadi semua bagian tumbuhan."
+            },
+            {
+                id: 3,
+                difficulty: "mudah",
+                type: "text",
+                text: "Produk bioteknologi konvensional yang dibuat dari kedelai dengan bantuan jamur Aspergillus adalah...",
+                answer: "tempe",
+                explanation: "Jamur Rhizopus oligosporus (sering dikaitkan dengan Aspergillus) digunakan dalam pembuatan tempe. Aspergillus juga digunakan dalam pembuatan kecap dan tauco."
+            },
+            
+            // Soal Sedang (Pilihan Ganda)
+            {
+                id: 4,
+                difficulty: "sedang",
+                type: "single",
+                text: "Pernyataan berikut ini yang merupakan keuntungan dari penggunaan tanaman transgenik adalah...",
+                options: [
+                    "Meningkatkan keanekaragaman hayati di lahan pertanian.",
+                    "Mengurangi ketergantungan pada pupuk dan pestisida kimia.",
+                    "Selalu diterima dengan baik oleh semua masyarakat tanpa penolakan.",
+                    "Tidak memiliki dampak sama sekali terhadap lingkungan."
+                ],
+                answer: 1,
+                explanation: "Tanaman transgenik seperti tanaman Bt (tahan hama) atau tanaman tahan herbisida dirancang untuk meminimalkan penggunaan bahan kimia pertanian. Pilihan lain salah karena tanaman transgenik justru dapat mengurangi keanekaragaman, ada kontroversi masyarakat, dan memiliki dampak lingkungan."
+            },
+            {
+                id: 5,
+                difficulty: "sedang",
+                type: "single",
+                text: "Vektor (pembawa) yang sering digunakan untuk memasukkan gen ke dalam sel tumbuhan adalah...",
+                options: [
+                    "Virus Baculovirus",
+                    "Plasmid Ti dari Agrobacterium tumefaciens",
+                    "Plasmid dari E. coli",
+                    "Enzim restriksi"
+                ],
+                answer: 1,
+                explanation: "Bakteri Agrobacterium tumefaciens secara alami mampu menginfeksi tumbuhan dan mentransfer sebagian plasmidnya (DNA-T) ke dalam genom tumbuhan. Sifat ini dimanfaatkan dalam rekayasa genetika tumbuhan."
+            },
+            {
+                id: 6,
+                difficulty: "sedang",
+                type: "single",
+                text: "Dalam pembuatan insulin manusia dengan bantuan bakteri, gen insulin manusia disisipkan ke dalam plasmid bakteri. Organisme yang telah mengandung gen asing ini disebut...",
+                options: [
+                    "Organisme kloning",
+                    "Organisme transgenik",
+                    "Organisme mutan",
+                    "Organisme hibrid"
+                ],
+                answer: 1,
+                explanation: "Organisme transgenik adalah organisme yang materi genetiknya telah diubah dengan menambahkan gen dari spesies lain."
+            },
+            
+            // Soal Sedang (Pilihan Ganda Kompleks)
+            {
+                id: 7,
+                difficulty: "sedang",
+                type: "multiple",
+                text: "Manakah dari pernyataan berikut yang merupakan contoh penerapan bioteknologi merah (red biotechnology)?",
+                options: [
+                    "Produksi vaksin hepatitis B menggunakan ragi.",
+                    "Pembuatan biogas dari limbah peternakan.",
+                    "Terapi gen untuk menyembuhkan penyakit cystic fibrosis.",
+                    "Bioremediasi untuk membersihkan tumpahan minyak di laut."
+                ],
+                answer: [0, 2],
+                explanation: "Bioteknologi merah (red biotechnology) berkaitan dengan aplikasi medis, termasuk pembuatan obat, vaksin, dan terapi gen. Pilihan B adalah bioteknologi hijau (lingkungan/energi) dan pilihan D adalah bioteknologi putih/abu-abu (industri/lingkungan)."
+            },
+            {
+                id: 8,
+                difficulty: "sedang",
+                type: "multiple",
+                text: "Teknik PCR (Polymerase Chain Reaction) memiliki banyak manfaat, di antaranya adalah...",
+                options: [
+                    "Memotong DNA menjadi fragmen-fragmen kecil.",
+                    "Membuat kopian DNA dalam jumlah banyak dari sampel yang sedikit.",
+                    "Mengidentifikasi susunan basa nitrogen pada suatu gen.",
+                    "Mendiagnosa penyakit infeksi dengan mendeteksi DNA patogen."
+                ],
+                answer: [1, 3],
+                explanation: "PCR berfungsi untuk memperbanyak (amplifikasi) sekuens DNA tertentu secara eksponensial, sehingga sangat berguna untuk mendiagnosa penyakit dari sampel DNA patogen yang jumlahnya sedikit. Pilihan A adalah fungsi enzim restriksi. Pilihan C adalah fungsi dari teknik sekuensing DNA."
+            },
+            
+            // Soal Sedang (Isian Singkat)
+            {
+                id: 9,
+                difficulty: "sedang",
+                type: "text",
+                text: "Teknik yang digunakan untuk membuat banyak salinan (copy) DNA secara in vitro (di luar sel hidup) dalam waktu singkat disebut...",
+                answer: "PCR",
+                explanation: "Teknik PCR (Polymerase Chain Reaction) mensimulasikan proses replikasi DNA dalam tabung reaksi, menghasilkan jutaan salinan dari satu segmen DNA target."
+            },
+            {
+                id: 10,
+                difficulty: "sedang",
+                type: "text",
+                text: "Dalam proses pembuatan keju, enzim ... yang diekstrak dari lambung sapi muda digunakan untuk mengentalkan susu.",
+                answer: "rennin",
+                explanation: "Enzim rennin (atau chymosin) bekerja dengan menggumpalkan protein kasein dalam susu, yang merupakan langkah pertama dalam pembuatan keju."
+            },
+            
+            // Soal Sulit (Pilihan Ganda)
+            {
+                id: 11,
+                difficulty: "sulit",
+                type: "single",
+                text: "Seorang peneliti ingin mengkloning gen manusia yang bertanggung jawab untuk memproduksi hormon pertumbuhan. Setelah gen berhasil diisolasi, langkah selanjutnya yang harus dilakukan adalah...",
+                options: [
+                    "Menyisipkan gen ke dalam plasmid dan memasukkannya ke dalam sel bakteri.",
+                    "Langung menyuntikkan gen tersebut ke dalam pasien yang kekurangan hormon pertumbuhan.",
+                    "Memotong gen tersebut menggunakan enzim ligase.",
+                    "Mengultur sel bakteri yang tidak mengandung plasmid terlebih dahulu."
+                ],
+                answer: 0,
+                explanation: "Setelah gen diisolasi, gen tersebut harus dimasukkan ke dalam vektor (biasanya plasmid) untuk dapat direplikasi dan diekspresikan di dalam sel inang (bakteri). Proses penyisipan ini membutuhkan enzim ligase."
+            },
+            {
+                id: 12,
+                difficulty: "sulit",
+                type: "single",
+                text: "Sebuah tanaman transgenik tahan hama disilangkan dengan tanaman non-transgenik yang rentan. Jika gen ketahanan bersifat dominan, persentase keturunan F1 yang diharapkan akan memiliki sifat tahan hama adalah...",
+                options: [
+                    "0%",
+                    "25%",
+                    "50%",
+                    "100%"
+                ],
+                answer: 3,
+                explanation: "Gen ketahanan (misal, gen R) bersifat dominan terhadap gen rentan (r). Tanaman transgenik memiliki genotipe RR atau Rr (asumsikan homozigot RR), disilangkan dengan tanaman rentan (rr). Semua keturunan F1 akan memiliki genotipe Rr, yang berarti semuanya menunjukkan fenotipe tahan hama."
+            },
+            
+            // Soal Sulit (Isian Singkat)
+            {
+                id: 13,
+                difficulty: "sulit",
+                type: "text",
+                text: "Teknik elektroforesis gel digunakan untuk memisahkan fragmen DNA berdasarkan ukurannya. Dalam teknik ini, fragmen DNA bermuatan ... sehingga akan bergerak menuju elektrode yang bermuatan ....",
+                answer: "negatif; positif",
+                explanation: "Molekul DNA memiliki gugus fosfat yang bermuatan negatif. Dalam medan listrik, molekul yang bermuatan negatif akan tertarik dan bergerak menuju elektrode (kutub) positif (anoda). Prinsip ini memungkinkan pemisahan fragmen DNA berdasarkan ukuran."
+            }
+        ];
+
+        // Fungsi untuk membuat elemen soal
+        function createQuestionElement(question) {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.dataset.id = question.id;
+            
+            const questionNumber = document.createElement('div');
+            questionNumber.className = 'question-number';
+            questionNumber.textContent = `Soal ${question.id} (${question.difficulty})`;
+            questionDiv.appendChild(questionNumber);
+            
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.textContent = question.text;
+            questionDiv.appendChild(questionText);
+            
+            // Untuk soal pilihan ganda
+            if (question.type === 'single' || question.type === 'multiple') {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.dataset.index = index;
+                    
+                    const optionText = document.createElement('span');
+                    optionText.textContent = option;
+                    optionDiv.appendChild(optionText);
+                    
+                    // Untuk pilihan ganda tunggal
+                    if (question.type === 'single') {
+                        optionDiv.addEventListener('click', function() {
+                            // Hapus seleksi dari opsi lain
+                            const siblings = optionsDiv.querySelectorAll('.option');
+                            siblings.forEach(sibling => {
+                                sibling.classList.remove('selected');
+                            });
+                            
+                            // Tandai opsi yang dipilih
+                            this.classList.add('selected');
+                        });
+                    }
+                    
+                    // Untuk pilihan ganda kompleks
+                    if (question.type === 'multiple') {
+                        optionDiv.addEventListener('click', function() {
+                            this.classList.toggle('selected');
+                        });
+                    }
+                    
+                    optionsDiv.appendChild(optionDiv);
+                });
+                
+                questionDiv.appendChild(optionsDiv);
+            }
+            
+            // Untuk soal isian singkat
+            if (question.type === 'text') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = 'Ketik jawaban Anda di sini...';
+                questionDiv.appendChild(input);
+            }
+            
+            // Tambahkan area untuk penjelasan
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            
+            const explanationTitle = document.createElement('div');
+            explanationTitle.className = 'explanation-title';
+            explanationTitle.textContent = 'Pembahasan:';
+            explanationDiv.appendChild(explanationTitle);
+            
+            const explanationText = document.createElement('div');
+            explanationText.textContent = question.explanation;
+            explanationDiv.appendChild(explanationText);
+            
+            questionDiv.appendChild(explanationDiv);
+            
+            return questionDiv;
+        }
+
+        // Fungsi untuk memeriksa jawaban
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = questions.length;
+            
+            questions.forEach(question => {
+                const questionElement = document.querySelector(`.question[data-id="${question.id}"]`);
+                const explanationElement = questionElement.querySelector('.explanation');
+                
+                // Tampilkan penjelasan
+                explanationElement.classList.add('show');
+                
+                // Periksa jawaban berdasarkan jenis soal
+                if (question.type === 'text') {
+                    const input = questionElement.querySelector('input');
+                    const userAnswer = input.value.trim().toLowerCase();
+                    
+                    // Normalisasi jawaban untuk perbandingan
+                    const correctAnswer = question.answer.toLowerCase();
+                    
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        input.style.backgroundColor = '#d4edda';
+                    } else {
+                        input.style.backgroundColor = '#f8d7da';
+                    }
+                } 
+                else if (question.type === 'single') {
+                    const selectedOption = questionElement.querySelector('.option.selected');
+                    
+                    if (selectedOption && parseInt(selectedOption.dataset.index) === question.answer) {
+                        score++;
+                        selectedOption.classList.add('correct');
+                    } else {
+                        if (selectedOption) {
+                            selectedOption.classList.add('incorrect');
+                        }
+                        
+                        // Tampilkan jawaban yang benar
+                        const correctOption = questionElement.querySelector(`.option[data-index="${question.answer}"]`);
+                        correctOption.classList.add('correct');
+                    }
+                }
+                else if (question.type === 'multiple') {
+                    const selectedOptions = questionElement.querySelectorAll('.option.selected');
+                    const selectedIndices = Array.from(selectedOptions).map(option => parseInt(option.dataset.index));
+                    
+                    // Periksa apakah jawaban benar (urutan tidak penting)
+                    const isCorrect = selectedIndices.length === question.answer.length && 
+                                     question.answer.every(index => selectedIndices.includes(index));
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOptions.forEach(option => {
+                            option.classList.add('correct');
+                        });
+                    } else {
+                        selectedOptions.forEach(option => {
+                            option.classList.add('incorrect');
+                        });
+                        
+                        // Tampilkan jawaban yang benar
+                        question.answer.forEach(index => {
+                            const correctOption = questionElement.querySelector(`.option[data-index="${index}"]`);
+                            correctOption.classList.add('correct');
+                        });
+                    }
+                }
+            });
+            
+            // Tampilkan skor
+            const scoreElement = document.getElementById('score');
+            scoreElement.textContent = `Skor Anda: ${score} dari ${totalQuestions}`;
+            scoreElement.classList.add('show');
+        }
+
+        // Fungsi untuk mereset kuis
+        function resetQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+            
+            // Buat ulang semua soal
+            questions.forEach(question => {
+                const questionElement = createQuestionElement(question);
+                quizContainer.appendChild(questionElement);
+            });
+            
+            // Sembunyikan skor
+            const scoreElement = document.getElementById('score');
+            scoreElement.classList.remove('show');
+        }
+
+        // Inisialisasi kuis saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizContainer = document.getElementById('quiz-container');
+            
+            // Buat elemen untuk setiap soal
+            questions.forEach(question => {
+                const questionElement = createQuestionElement(question);
+                quizContainer.appendChild(questionElement);
+            });
+            
+            // Tambahkan event listener untuk tombol
+            document.getElementById('check-answers').addEventListener('click', checkAnswers);
+            document.getElementById('reset-quiz').addEventListener('click', resetQuiz);
+        });
+    </script>
+</body>
+</html>
