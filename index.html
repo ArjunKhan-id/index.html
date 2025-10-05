@@ -1,11 +1,36 @@
 <!DOCTYPE html>
 <html lang="id">
+    <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <style>
+    /* Gaya tombol dengan efek pencet */
+    .btn {
+      background: linear-gradient(180deg,#007bff,#0056d6);
+      color: white;
+      font-weight: bold;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+      font-size: 18px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+    }
+  </style>
+    </head>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Bioteknologi</title>
     <h6>by Arjun Khan</h6>
-    <p><h5>(anak smarid)</h5></p>
+    <h5>(anak smarid)</h5>
     <style>
         * {
             box-sizing: border-box;
